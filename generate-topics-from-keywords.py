@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 from sklearn.cluster import AffinityPropagation
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -15,14 +16,16 @@ af = AffinityPropagation().fit(X)
 cluster_centers_indices = af.cluster_centers_indices_
 labels = af.labels_
 
-# Print the number of clusters found
+# Get the number of clusters found
 n_clusters = len(cluster_centers_indices)
-print("Number of clusters:", n_clusters)
 
-# Print the keywords in each cluster
-for i in range(n_clusters):
-    print("Cluster", i)
-    for j, label in enumerate(labels):
-        if label == i:
-            print(keywords[j])
-    print("\n")
+# Write the clusters to a csv file
+with open("clusters.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["Cluster", "Keywords"])
+    for i in range(n_clusters):
+        cluster_keywords = []
+        for j, label in enumerate(labels):
+            if label == i:
+                cluster_keywords.append(keywords[j])
+        writer.writerow([i, ", ".join(cluster_keywords)])
